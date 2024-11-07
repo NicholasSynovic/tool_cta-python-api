@@ -12,6 +12,9 @@ classifiers = ["Development Status :: 1 - Planning"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+requests = "^2.32.3"
+pandas = "^2.2.3"
+jsonschema = "^4.23.0"
 
 
 [build-system]
