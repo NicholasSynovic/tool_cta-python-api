@@ -210,7 +210,10 @@ class Arrivals(API, API_PROTOCOL):
         if validateData(data=data, schema=ARRIVALS_SCHEMA) is False:
             return DataFrame()
 
-        self.queryTime = Timestamp(ts_input=data["ctatt"]["tmst"]).timestamp()
+        self.queryTime = Timestamp(
+            ts_input=data["ctatt"]["tmst"],
+            tz="America/Chicago",
+        ).timestamp()
 
         return DataFrame.from_records(data=data["ctatt"]["eta"])
 
@@ -232,6 +235,9 @@ class FollowThisTrain(API, API_PROTOCOL):
         if validateData(data=data, schema=FOLLOWTHISTRAIN_SCHEMA) is False:
             return DataFrame()
 
-        self.queryTime = Timestamp(ts_input=data["ctatt"]["tmst"]).timestamp()
+        self.queryTime = Timestamp(
+            ts_input=data["ctatt"]["tmst"],
+            tz="America/Chicago",
+        ).timestamp()
 
         return DataFrame.from_records(data=data["ctatt"]["eta"])
