@@ -81,6 +81,94 @@ ARRIVALS_SCHEMA: dict = {
     },
 }
 
+FOLLOWTHISTRAIN_SCHEMA: dict = {
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/FollowThisTrain",
+    "definitions": {
+        "FollowThisTrain": {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {"ctatt": {"$ref": "#/definitions/Ctatt"}},
+            "required": ["ctatt"],
+            "title": "FollowThisTrain",
+        },
+        "Ctatt": {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "tmst": {"type": "string", "format": "date-time"},
+                "errCd": {"type": "string", "format": "integer"},
+                "errNm": {"type": "null"},
+                "position": {"$ref": "#/definitions/Position"},
+                "eta": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/Eta"},
+                },
+            },
+            "required": ["errCd", "errNm", "eta", "position", "tmst"],
+            "title": "Ctatt",
+        },
+        "Eta": {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "staId": {"type": "string", "format": "integer"},
+                "stpId": {"type": "string", "format": "integer"},
+                "staNm": {"type": "string"},
+                "stpDe": {"type": "string"},
+                "rn": {"type": "string", "format": "integer"},
+                "rt": {"$ref": "#/definitions/Rt"},
+                "destSt": {"type": "string", "format": "integer"},
+                "destNm": {"$ref": "#/definitions/DestNm"},
+                "trDr": {"type": "string", "format": "integer"},
+                "prdt": {"type": "string", "format": "date-time"},
+                "arrT": {"type": "string", "format": "date-time"},
+                "isApp": {"type": "string", "format": "integer"},
+                "isSch": {"type": "string", "format": "integer"},
+                "isDly": {"type": "string", "format": "integer"},
+                "isFlt": {"type": "string", "format": "integer"},
+                "flags": {"type": "null"},
+            },
+            "required": [
+                "arrT",
+                "destNm",
+                "destSt",
+                "flags",
+                "isApp",
+                "isDly",
+                "isFlt",
+                "isSch",
+                "prdt",
+                "rn",
+                "rt",
+                "staId",
+                "staNm",
+                "stpDe",
+                "stpId",
+                "trDr",
+            ],
+            "title": "Eta",
+        },
+        "Position": {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "lat": {"type": "string"},
+                "lon": {"type": "string"},
+                "heading": {"type": "string", "format": "integer"},
+            },
+            "required": ["heading", "lat", "lon"],
+            "title": "Position",
+        },
+        "DestNm": {
+            "type": "string",
+            "enum": ["Loop", "54th/Cermak"],
+            "title": "DestNm",
+        },
+        "Rt": {"type": "string", "enum": ["Pink Line"], "title": "Rt"},
+    },
+}
+
 
 class Arrivals(API, API_PROTOCOL):
     def __init__(self, key: str) -> None:
@@ -120,6 +208,28 @@ class Arrivals(API, API_PROTOCOL):
 
         data: dict = resp.json()
         if validateData(data=data, schema=ARRIVALS_SCHEMA) is False:
+            return DataFrame()
+
+        self.queryTime = Timestamp(ts_input=data["ctatt"]["tmst"]).timestamp()
+
+        return DataFrame.from_records(data=data["ctatt"]["eta"])
+
+
+class FollowThisTrain(API, API_PROTOCOL):
+    def __init__(self, key: str) -> None:
+        self.key: str = key
+        self.queryTime: float = -1
+        self.endpointBase: str = f"https://lapi.transitchicago.com/api/1.0/ttfollow.aspx?&outputType=JSON&key={self.key}"  # noqa: E501
+
+    def get(self, runnumber: int) -> DataFrame:
+        endpoint = self.endpointBase
+
+        endpoint = endpoint + "&runnumber=" + str(runnumber)
+
+        resp: Response = get(url=endpoint)
+
+        data: dict = resp.json()
+        if validateData(data=data, schema=FOLLOWTHISTRAIN_SCHEMA) is False:
             return DataFrame()
 
         self.queryTime = Timestamp(ts_input=data["ctatt"]["tmst"]).timestamp()
