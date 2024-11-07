@@ -1,6 +1,7 @@
 import ssl
 from ssl import SSLContext
 
+from jsonschema import ValidationError, validate
 from requests import Response, Session
 from requests.adapters import HTTPAdapter
 
@@ -23,3 +24,13 @@ def get(url: str) -> Response:
     session.mount("https://", SSLAdapter(ssl_context=context))
 
     return session.get(url=url, timeout=60)
+
+
+def validateData(data: dict, schema: dict) -> bool:
+    try:
+        validate(instance=data, schema=schema)
+    except ValidationError as ve:
+        print(ve)
+        return False
+    else:
+        return True
