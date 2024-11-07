@@ -1,7 +1,8 @@
 import requests
-from jsonschema import ValidationError, validate
 from pandas import DataFrame
 from requests import Response
+
+from src import API, API_PROTOCOL, validateData
 
 STOPS_SCHEMA: dict = {
     "$schema": "http://json-schema.org/draft-06/schema#",
@@ -65,20 +66,18 @@ STOPS_SCHEMA: dict = {
 }
 
 
-class Stops:
+class Stops(API, API_PROTOCOL):
     def __init__(self) -> None:
-        self.endpoint: str = (
+        self.endpointBase: str = (
             "https://data.cityofchicago.org/resource/8pix-ypme.json"  # noqa: E501
         )
 
     def get(self) -> DataFrame:
-        resp: Response = requests.get(url=self.endpoint, timeout=60)
+        resp: Response = requests.get(url=self.endpointBase, timeout=60)
 
-        try:
-            validate(instance=resp.json(), schema=STOPS_SCHEMA)
-        except ValidationError as ve:
-            print(ve)
-            return DataFrame
+        data: dict = resp.json()
+        if validateData(data=data, schema=STOPS_SCHEMA) is False:
+            return DataFrame()
 
         df: DataFrame = DataFrame.from_records(data=resp.json())
         return df

@@ -1,9 +1,23 @@
 import ssl
+from abc import ABC, abstractmethod
 from ssl import SSLContext
+from typing import Protocol
 
 from jsonschema import ValidationError, validate
+from pandas import DataFrame
 from requests import Response, Session
 from requests.adapters import HTTPAdapter
+
+
+class API(ABC):
+    @abstractmethod
+    def get(self) -> DataFrame:
+        ...
+
+
+class API_PROTOCOL(Protocol):
+    queryTime: float
+    endpointBase: str
 
 
 class SSLAdapter(HTTPAdapter):

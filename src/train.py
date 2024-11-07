@@ -3,7 +3,7 @@ from typing import Optional
 from pandas import DataFrame, Timestamp
 from requests import Response
 
-from src import get, validateData
+from src import API, API_PROTOCOL, get, validateData
 
 ARRIVALS_SCHEMA: dict = {
     "$schema": "http://json-schema.org/draft-06/schema#",
@@ -82,11 +82,11 @@ ARRIVALS_SCHEMA: dict = {
 }
 
 
-class Arrivals:
+class Arrivals(API, API_PROTOCOL):
     def __init__(self, key: str) -> None:
         self.key = key
         self.queryTime: float = -1
-        self.endpointTemplate: str = (
+        self.endpointBase: str = (
             "http://lapi.transitchicago.com/api/1.0/ttarrivals.aspx?outputType=JSON&key="  # noqa: E501
             + self.key
         )
@@ -101,7 +101,7 @@ class Arrivals:
         if (mapid is None) and (stpid is None):
             return False
 
-        endpoint: str = self.endpointTemplate
+        endpoint: str = self.endpointBase
 
         if (mapid != "") and (mapid is not None):
             endpoint = endpoint + "&mapid=" + mapid
@@ -117,8 +117,8 @@ class Arrivals:
             endpoint = endpoint + "&rt=" + rt
 
         resp: Response = get(url=endpoint)
-        data: dict = resp.json()
 
+        data: dict = resp.json()
         if validateData(data=data, schema=ARRIVALS_SCHEMA) is False:
             return DataFrame()
 
