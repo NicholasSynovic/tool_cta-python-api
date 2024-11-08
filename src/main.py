@@ -2,7 +2,7 @@ import click
 from pandas import DataFrame
 
 from src.stops import Stops
-from src.train import Arrivals, FollowThisTrain
+from src.train import Arrivals, FollowThisTrain, Locations
 
 
 @click.command()
@@ -18,6 +18,7 @@ def main(apiKey: str) -> None:
     s: Stops = Stops()
     a: Arrivals = Arrivals(key=apiKey)
     ftt: FollowThisTrain = FollowThisTrain(key=apiKey)
+    l: Locations = Locations(key=apiKey)
 
     stopsDF: DataFrame = s.get()
     print(stopsDF)
@@ -27,8 +28,11 @@ def main(apiKey: str) -> None:
     arrivalsDF: DataFrame = a.get(stpid=stopID)
     print(arrivalsDF)
 
-    fttDF: DataFrame = ftt.get(runnumber=316)
+    fttDF: DataFrame = ftt.get(runnumber=10000)
     print(fttDF)
+
+    lDF: DataFrame = l.get(rt=["red", "blue"])
+    print(lDF)
 
 
 if __name__ == "__main__":

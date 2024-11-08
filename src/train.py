@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 
 from pandas import DataFrame, Timestamp
 from requests import Response
@@ -169,6 +169,98 @@ FOLLOWTHISTRAIN_SCHEMA: dict = {
     },
 }
 
+LOCATIONS_SCHEMA: dict = {
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/Locations",
+    "definitions": {
+        "Locations": {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {"ctatt": {"$ref": "#/definitions/Ctatt"}},
+            "required": ["ctatt"],
+            "title": "Locations",
+        },
+        "Ctatt": {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "tmst": {"type": "string", "format": "date-time"},
+                "errCd": {"type": "string", "format": "integer"},
+                "errNm": {"type": "null"},
+                "route": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/Route"},
+                },
+            },
+            "required": ["errCd", "errNm", "route", "tmst"],
+            "title": "Ctatt",
+        },
+        "Route": {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "@name": {"type": "string"},
+                "train": {
+                    "type": "array",
+                    "items": {"$ref": "#/definitions/Train"},
+                },
+            },
+            "required": ["@name", "train"],
+            "title": "Route",
+        },
+        "Train": {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "rn": {"type": "string", "format": "integer"},
+                "destSt": {"type": "string", "format": "integer"},
+                "destNm": {"$ref": "#/definitions/DestNm"},
+                "trDr": {"type": "string", "format": "integer"},
+                "nextStaId": {"type": "string", "format": "integer"},
+                "nextStpId": {"type": "string", "format": "integer"},
+                "nextStaNm": {"type": "string"},
+                "prdt": {"type": "string", "format": "date-time"},
+                "arrT": {"type": "string", "format": "date-time"},
+                "isApp": {"type": "string", "format": "integer"},
+                "isDly": {"type": "string", "format": "integer"},
+                "flags": {"type": "null"},
+                "lat": {"type": "string"},
+                "lon": {"type": "string"},
+                "heading": {"type": "string", "format": "integer"},
+            },
+            "required": [
+                "arrT",
+                "destNm",
+                "destSt",
+                "flags",
+                "heading",
+                "isApp",
+                "isDly",
+                "lat",
+                "lon",
+                "nextStaId",
+                "nextStaNm",
+                "nextStpId",
+                "prdt",
+                "rn",
+                "trDr",
+            ],
+            "title": "Train",
+        },
+        "DestNm": {
+            "type": "string",
+            "enum": [
+                "Howard",
+                "95th/Dan Ryan",
+                "O'Hare",
+                "Forest Park",
+                "UIC-Halsted",
+            ],
+            "title": "DestNm",
+        },
+    },
+}
+
 
 class Arrivals(API, API_PROTOCOL):
     def __init__(self, key: str) -> None:
@@ -241,3 +333,38 @@ class FollowThisTrain(API, API_PROTOCOL):
         ).timestamp()
 
         return DataFrame.from_records(data=data["ctatt"]["eta"])
+
+
+class Locations(API, API_PROTOCOL):
+    def __init__(self, key: str) -> None:
+        self.key: str = key
+        self.queryTime: float = -1
+        self.endpointBase: str = f"https://lapi.transitchicago.com/api/1.0/ttpositions.aspx?outputType=JSON&key={self.key}"  # noqa: E501
+
+    def get(self, rt: List[str]) -> List[DataFrame]:
+        dfs: dict[str, DataFrame] = {}
+
+        endpoint: str = self.endpointBase
+
+        endpoint = endpoint + "&rt=" + ",".join(rt)
+
+        resp: Response = get(url=endpoint)
+
+        data: dict = resp.json()
+        if validateData(data=data, schema=LOCATIONS_SCHEMA) is False:
+            return {}
+
+        self.queryTime = Timestamp(
+            ts_input=data["ctatt"]["tmst"],
+            tz="America/Chicago",
+        ).timestamp()
+
+        routes: List[dict] = data["ctatt"]["route"]
+
+        route: dict
+        for route in routes:
+            line: str = route["@name"]
+            df: DataFrame = DataFrame.from_records(data=route["train"])
+            dfs[line] = df
+
+        return dfs
