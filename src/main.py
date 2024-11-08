@@ -28,7 +28,9 @@ def main(apiKey: str) -> None:
     arrivalsDF: DataFrame = a.get(stpid=stopID)
     print(arrivalsDF)
 
-    fttDF: DataFrame = ftt.get(runnumber=10000)
+    rnID: str = arrivalsDF["rn"][0]
+
+    fttDF: DataFrame = ftt.get(runnumber=rnID)
     print(fttDF)
 
     lDF: DataFrame = l.get(rt=["red", "blue"])
