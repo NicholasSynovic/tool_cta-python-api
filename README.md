@@ -59,6 +59,4 @@ This will add the library to your local `poetry` project.
 
 ## Documentation
 
-<!-- TODO -->
-
-API documentation is provided at this URL:
+API documentation is provided with this library.
