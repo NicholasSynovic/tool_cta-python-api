@@ -51,7 +51,7 @@ ARRIVALS_SCHEMA: dict = {
                 "isDly": {"type": "string", "format": "integer"},
                 "isFlt": {"type": "string", "format": "integer"},
                 "flags": {"type": "null"},
-                "lat": {"type": "string"},
+                "lat": {"type": ["string", "null"]},
                 "lon": {"type": ["string", "null"]},
                 "heading": {"type": "string", "format": "integer"},
             },
