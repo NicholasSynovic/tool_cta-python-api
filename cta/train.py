@@ -52,7 +52,7 @@ ARRIVALS_SCHEMA: dict = {
                 "isFlt": {"type": "string", "format": "integer"},
                 "flags": {"type": "null"},
                 "lat": {"type": "string"},
-                "lon": {"type": "string"},
+                "lon": {"type": ["string", "null"]},
                 "heading": {"type": "string", "format": "integer"},
             },
             "required": [
