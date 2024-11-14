@@ -1,3 +1,4 @@
 {
-    "adr_directory": "/home/nicholas/Documents/templates/template_python/docs/adr"
+    "adr_directory": "docs/adr",
+    "adr_format": "nygard"
 }
