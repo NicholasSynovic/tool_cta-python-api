@@ -266,10 +266,7 @@ class Arrivals(API, API_PROTOCOL):
     def __init__(self, key: str) -> None:
         self.key = key
         self.queryTime: float = -1
-        self.endpointBase: str = (
-            "http://lapi.transitchicago.com/api/1.0/ttarrivals.aspx?outputType=JSON&key="  # noqa: E501
-            + self.key
-        )
+        self.endpointBase: str = f"http://lapi.transitchicago.com/api/1.0/ttarrivals.aspx?outputType=JSON&key={self.key}"  # noqa: E501
 
     def get(
         self,
