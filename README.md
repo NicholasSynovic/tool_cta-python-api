@@ -41,6 +41,9 @@ JSON Schema. This is to ensure that:
 
 ## How To Install
 
+You will need a valid CTA API key for this library to work. You can apply for
+one [here](https://www.transitchicago.com/developers/traintrackerapply/).
+
 ### Manual Installation
 
 1. `git clone https://github.com/NicholasSynovic/tool_cta-python-api`
