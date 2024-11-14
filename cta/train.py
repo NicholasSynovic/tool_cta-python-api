@@ -263,7 +263,17 @@ LOCATIONS_SCHEMA: dict = {
 
 
 class Arrivals(API, API_PROTOCOL):
+    """
+    For a given route, get the list of all train arrivals to each station
+    """
+
     def __init__(self, key: str) -> None:
+        """
+        Initializes the class
+
+        :param key: Your unique API key, assigned to you after agreeing to DLA and requesting a key be generated for you
+        :type key: str
+        """  # noqa: E501
         self.key = key
         self.queryTime: float = -1
         self.endpointBase: str = f"http://lapi.transitchicago.com/api/1.0/ttarrivals.aspx?outputType=JSON&key={self.key}"  # noqa: E501
@@ -275,6 +285,20 @@ class Arrivals(API, API_PROTOCOL):
         max: Optional[int] = None,
         rt: Optional[str] = None,
     ) -> DataFrame:
+        """
+        Query the API endpoint
+
+        :param mapid: A single five-digit code to tell the server which station you’d like to receive predictions for
+        :type mapid: int | None, optional
+        :param stpid: A single five-digit code to tell the server which specific stop (in this context, specific platform or platform side within a larger station) you’d like to receive predictions for
+        :type stpid: int | None, optional
+        :param max: The maximum number you’d like to receive (if not specified, all available results for the requested stop or station will be returned)
+        :type max: Optional[int], optional
+        :param rt: Allows you to specify a single route for which you’d like results (if not specified, all available results for the requested stop or station will be returned)
+        :type rt: Optional[str], optional
+        :return: The JSON response as a pandas.DataFrame object
+        :rtype: DataFrame
+        """  # noqa: E501
         if (mapid is None) and (stpid is None):
             return False
 
@@ -308,12 +332,30 @@ class Arrivals(API, API_PROTOCOL):
 
 
 class FollowThisTrain(API, API_PROTOCOL):
+    """
+    This produces a list of arrival predictions for a given train at all subsequent stations for which that train is estimated to arrive, up to 60 minutes in the future or to the end of its trip
+    """  # noqa: E501
+
     def __init__(self, key: str) -> None:
+        """
+        Initializes the class
+
+        :param key: Your unique API key, assigned to you after agreeing to DLA and requesting a key be generated for you
+        :type key: str
+        """  # noqa: E501
         self.key: str = key
         self.queryTime: float = -1
         self.endpointBase: str = f"https://lapi.transitchicago.com/api/1.0/ttfollow.aspx?&outputType=JSON&key={self.key}"  # noqa: E501
 
     def get(self, runnumber: int) -> DataFrame:
+        """
+        Query the API endpoint
+
+        :param runnumber: Allows you to specify a single run number for a train for which you’d like a series of upcoming arrival estimations
+        :type runnumber: int
+        :return: The JSON response as a pandas.DataFrame object
+        :rtype: DataFrame
+        """  # noqa: E501
         endpoint = self.endpointBase
 
         endpoint = endpoint + "&runnumber=" + str(runnumber)
@@ -333,12 +375,32 @@ class FollowThisTrain(API, API_PROTOCOL):
 
 
 class Locations(API, API_PROTOCOL):
+    """
+    This produces a list of in-service trains and basic info and their locations for one or more specified CTA Train (L) routes.
+
+    Each separate entry describes a single train and provides coordinate, geospatial heading, certain train attributes and next stop information
+    """  # noqa: E501
+
     def __init__(self, key: str) -> None:
+        """
+        Initializes the class
+
+        :param key: Your unique API key, assigned to you after agreeing to DLA and requesting a key be generated for you
+        :type key: str
+        """  # noqa: E501
         self.key: str = key
         self.queryTime: float = -1
         self.endpointBase: str = f"https://lapi.transitchicago.com/api/1.0/ttpositions.aspx?outputType=JSON&key={self.key}"  # noqa: E501
 
     def get(self, rt: List[str]) -> List[DataFrame]:
+        """
+        Query the API endpoint
+
+        :param rt: Allows you to specify one or more routes for which you’d like train location information.
+        :type rt: List[str]
+        :return: The JSON response as a list of pandas.DataFrame
+        :rtype: List[DataFrame]
+        """  # noqa: E501
         dfs: dict[str, DataFrame] = {}
 
         endpoint: str = self.endpointBase

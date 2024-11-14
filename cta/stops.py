@@ -67,6 +67,10 @@ STOPS_SCHEMA: dict = {
 
 
 class Stops(API, API_PROTOCOL):
+    """
+    Get the list of CTA L stops
+    """
+
     def __init__(self) -> None:
         self.endpointBase: str = (
             "https://data.cityofchicago.org/resource/8pix-ypme.json"  # noqa: E501
