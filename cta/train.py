@@ -3,7 +3,7 @@ from typing import List, Optional
 from pandas import DataFrame, Timestamp
 from requests import Response
 
-from src import API, API_PROTOCOL, get, validateData
+from cta import API, API_PROTOCOL, get, validateData
 
 ARRIVALS_SCHEMA: dict = {
     "$schema": "http://json-schema.org/draft-06/schema#",

@@ -1,8 +1,8 @@
 import click
 from pandas import DataFrame
 
-from src.stops import Stops
-from src.train import Arrivals, FollowThisTrain, Locations
+from cta.stops import Stops
+from cta.train import Arrivals, FollowThisTrain, Locations
 
 
 @click.command()

@@ -2,7 +2,7 @@ import requests
 from pandas import DataFrame
 from requests import Response
 
-from src import API, API_PROTOCOL, validateData
+from cta import API, API_PROTOCOL, validateData
 
 STOPS_SCHEMA: dict = {
     "$schema": "http://json-schema.org/draft-06/schema#",
