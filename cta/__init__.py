@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from ssl import SSLContext
 from typing import Protocol
 
-from jsonschema import ValidationError, validate
+from jsonschema import validate
 from pandas import DataFrame
 from requests import Response, Session
 from requests.adapters import HTTPAdapter
@@ -81,13 +81,8 @@ def validateData(data: dict, schema: dict) -> bool:
     :type data: dict
     :param schema: JSON Schema
     :type schema: dict
-    :return: True if the JSON data matches the JSON schema, else False and print the error to stdout
+    :return: True if the JSON data matches the JSON schema, else jsonschema.ValidationError is raised
     :rtype: bool
     """  # noqa: E501
-    try:
-        validate(instance=data, schema=schema)
-    except ValidationError as ve:
-        print(ve)
-        return False
-    else:
-        return True
+    validate(instance=data, schema=schema)
+    return True
