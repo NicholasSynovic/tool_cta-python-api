@@ -53,7 +53,7 @@ ARRIVALS_SCHEMA: dict = {
                 "flags": {"type": "null"},
                 "lat": {"type": ["string", "null"]},
                 "lon": {"type": ["string", "null"]},
-                "heading": {"type": "string", "format": "integer"},
+                "heading": {"type": ["string", "null"], "format": "integer"},
             },
             "required": [
                 "arrT",
