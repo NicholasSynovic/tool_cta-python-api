@@ -19,11 +19,15 @@ indent_style = tab
 # JSON, YAML, TOML files
 [{*.json, *.yml, *.yaml, *.toml}]
 indent_style = space
-indent_size = 4
+
+# YAML files
+[{*.yml, *.yaml}]
+indent_size = 2
 
 # JSON files
 [*.json]
 trim_trailing_whitespace = false
+indent_size = 4
 
 # C, CPP, H files
 [{*.c, *.cpp, *.h}]

@@ -1,4 +1,6 @@
 build:
+	git --no-pager tag | tail -n 1 | xargs -I % poetry version %
+	poetry version --short > cta/_version
 	poetry build
 	pip install dist/*.tar.gz
 
@@ -12,3 +14,12 @@ create-dev:
 		poetry install; \
 		deactivate; \
 	)
+
+package:
+	pyinstaller --clean \
+		--onefile \
+		--add-data ./cta/_version:. \
+		--workpath ./pyinstaller \
+		--name src \
+		--hidden-import cta \
+		cta/main.py
