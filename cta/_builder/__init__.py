@@ -86,3 +86,20 @@ def _checkInList(obj: Any, _list: List[Any]) -> None:
         _list.index(obj)
     except ValueError:
         raise ValueError(f"`{obj}` not in `_list`: `{_list}`")
+
+
+def _checkArgIsValidListOrString(
+    arg: Any,
+    parameterName: str,
+    validObj: List[str] | str,
+) -> None:
+    if _checkNotNoneAndType(obj=arg, types=(list, str)) is False:
+        raise TypeError(f"`{parameterName}` must be a list or string")
+
+    if isinstance(arg, list):
+        foo: str
+        for foo in arg:
+            _checkInList(obj=foo, _list=validObj)
+
+    if isinstance(arg, str):
+        _checkInList(obj=arg, _list=validObj)
