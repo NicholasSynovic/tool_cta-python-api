@@ -1,6 +1,6 @@
 from requests import Response, get
 
-from cta.api.builders.train import TrainAPIBuilder
+from cta._builder.train import TrainAPIBuilder
 
 
 class TrainAPIDirector:

@@ -3,7 +3,7 @@ from time import time
 from pandas import DataFrame
 from requests import Response
 
-from cta.api.directors.train import TrainAPIDirector
+from cta._director.train import TrainAPIDirector
 
 
 class TrainAPI:

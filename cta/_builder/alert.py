@@ -1,7 +1,7 @@
 from functools import partial
 from typing import List, Literal, Optional
 
-import cta.api.builders
+import cta._builder
 
 SAFE_JOIN: partial = partial(cta.api.builders._safeJoin)
 VALID_TYPE: List[str] = ["bus", "rail", "station", "systemwide"]

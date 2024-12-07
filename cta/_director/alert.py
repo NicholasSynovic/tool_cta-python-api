@@ -1,6 +1,6 @@
 from requests import Response, get
 
-from cta.api.builders.alert import AlertAPIBuilder
+from cta._builder.alert import AlertAPIBuilder
 
 
 class AlertAPIDirector:

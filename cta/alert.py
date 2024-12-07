@@ -3,7 +3,7 @@ from time import time
 from pandas import DataFrame
 from requests import Response
 
-from cta.api.directors.alert import AlertAPIDirector
+from cta._director.alert import AlertAPIDirector
 
 
 class AlertAPI:

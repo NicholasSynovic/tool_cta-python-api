@@ -1,7 +1,7 @@
 from functools import partial
 from typing import Literal, Optional
 
-import cta.api.builders
+import cta._builder
 
 
 class TrainAPIBuilder:

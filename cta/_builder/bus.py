@@ -1,7 +1,7 @@
 import functools
 import typing
 
-import cta.api.builders
+import cta._builder
 
 
 class BusAPIBuilder:
