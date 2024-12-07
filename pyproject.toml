@@ -17,6 +17,8 @@ pandas = "^2.2.3"
 jsonschema = "^4.23.0"
 click = "^8.1.7"
 
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.4"
 
 [build-system]
 requires = ["poetry-core"]
