@@ -3,11 +3,11 @@ from typing import List
 import pytest
 
 from cta._builder import (
+    _checkArgIsValidListOrString,
     _checkInList,
     _checkNotNoneAndType,
     _constructAPI,
     _safeJoin,
-    _checkArgIsValidListOrString,
 )
 
 
@@ -58,14 +58,40 @@ def test_checkInList() -> None:
         _checkInList(obj=1, _list=["test"])
 
 
-def test_checkArgIsValidListOrString()  ->  None:
-    assert _checkArgIsValidListOrString(arg="test", parameterName="test", validObj=["test"],) is None
+def test_checkArgIsValidListOrString() -> None:
+    assert (
+        _checkArgIsValidListOrString(
+            arg="test",
+            parameterName="test",
+            validObj=["test"],
+        )
+        is None
+    )
 
-    assert _checkArgIsValidListOrString(arg=["test"], parameterName="test", validObj=["test"],) is None
+    assert (
+        _checkArgIsValidListOrString(
+            arg=["test"],
+            parameterName="test",
+            validObj=["test"],
+        )
+        is None
+    )
 
     with pytest.raises(TypeError):
-        _checkArgIsValidListOrString(arg=1, parameterName="test", validObj=["test"],)
+        _checkArgIsValidListOrString(
+            arg=1,
+            parameterName="test",
+            validObj=["test"],
+        )
 
     with pytest.raises(expected_exception=ValueError):
-        _checkArgIsValidListOrString(arg="hello", parameterName="test", validObj=["world"],)
-        _checkArgIsValidListOrString(arg=["hello"], parameterName="test", validObj=["world"],)
+        _checkArgIsValidListOrString(
+            arg="hello",
+            parameterName="test",
+            validObj=["world"],
+        )
+        _checkArgIsValidListOrString(
+            arg=["hello"],
+            parameterName="test",
+            validObj=["world"],
+        )
