@@ -1,3 +1,4 @@
+import logging
 import typing
 import urllib.parse
 
@@ -47,6 +48,10 @@ def _safeJoin(data: typing.Any, sep: str = ",") -> str | None:
         return data
 
     if isinstance(data, list):
-        return f"{sep}".join(data)
+        try:
+            return f"{sep}".join(data)
+        except TypeError as e:
+            logging.exception(msg=e)
+            raise TypeError
 
     return None
